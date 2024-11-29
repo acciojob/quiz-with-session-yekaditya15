@@ -88,7 +88,8 @@ document.getElementById("submit").addEventListener("click", () => {
 // Display stored score if available
 const storedScore = localStorage.getItem("score");
 if (storedScore) {
-  document.getElementById("score").innerText = `Your last score was ${storedScore} out of ${questions.length}.`;
+document.getElementById("score").textContent = `Your score is ${score} out of 5.`;
+
 }
 
 // Render questions on page load
