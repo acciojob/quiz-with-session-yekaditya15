@@ -1,4 +1,4 @@
-// Questions data
+// Questions array
 const questions = [
   {
     question: "What is the capital of France?",
@@ -27,16 +27,17 @@ const questions = [
   },
 ];
 
-// Initialize user answers from session storage or as an empty array
-let userAnswers = JSON.parse(sessionStorage.getItem('progress')) || new Array(questions.length).fill(null);
+let userAnswers = JSON.parse(sessionStorage.getItem("progress")) || [];
 
-// Render questions
+// Function to render questions
 function renderQuestions() {
-  const questionsElement = document.getElementById('questions');
-  questionsElement.innerHTML = ''; // Clear any previous content
-  
+  const questionsElement = document.getElementById("questions");
+  questionsElement.innerHTML = ""; // Clear any previous questions
+
   questions.forEach((question, i) => {
     const questionElement = document.createElement("div");
+
+    // Create question text
     const questionText = document.createTextNode(question.question);
     questionElement.appendChild(questionText);
 
@@ -46,51 +47,45 @@ function renderQuestions() {
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
 
-      // Check if the current choice is selected
+      // Pre-select the answer if available in sessionStorage
       if (userAnswers[i] === choice) {
         choiceElement.setAttribute("checked", true);
       }
 
       // Event listener to update answers in session storage
-      choiceElement.addEventListener('change', () => {
+      choiceElement.addEventListener("change", () => {
         userAnswers[i] = choice;
-        sessionStorage.setItem('progress', JSON.stringify(userAnswers)); // Save progress
+        sessionStorage.setItem("progress", JSON.stringify(userAnswers)); // Save progress
       });
 
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
     });
+
     questionsElement.appendChild(questionElement);
   });
 }
 
-// Calculate score
-function calculateScore() {
+// Function to submit the quiz
+function submitQuiz() {
   let score = 0;
   questions.forEach((question, i) => {
     if (userAnswers[i] === question.answer) {
       score++;
     }
   });
-  return score;
-}
 
-// Handle submit
-document.getElementById("submit").addEventListener("click", () => {
-  const score = calculateScore();
-  document.getElementById("score").innerText = `Your score is ${score} out of ${questions.length}`;
-  
-  // Store score in local storage
+  // Display the score with period at the end
+  const scoreElement = document.getElementById("score");
+  scoreElement.textContent = `Your score is ${score} out of 5.`;
+
+  // Store score in localStorage
   localStorage.setItem("score", score);
-});
-
-// Display stored score if available
-const storedScore = localStorage.getItem("score");
-if (storedScore) {
-document.getElementById("score").textContent = `Your score is ${score} out of 5.`;
-
 }
 
-// Render questions on page load
+// Render questions when the page loads
 renderQuestions();
+
+// Handle submit button click
+document.getElementById("submit").addEventListener("click", submitQuiz);
